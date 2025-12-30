@@ -9,6 +9,9 @@ const registerUser = asyncHandler ( async (req,res) => {
     //     message: "ok"
     // })
 
+    // console.log("FILES => ", req.files);
+    // console.log("BODY => ", req.body);
+
 
     // get user details from frontend
     // validation -(that any field will not empty)
@@ -37,7 +40,7 @@ const registerUser = asyncHandler ( async (req,res) => {
     
 
 
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [{ username }, { email }]
     })
 
@@ -47,21 +50,71 @@ const registerUser = asyncHandler ( async (req,res) => {
 
 
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    // const avatarLocalPath = req.files?.avatar[0]?.path;
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+    // let coverImageLocalPath;
+    // if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+    //     coverImageLocalPath = req.files.coverImage[0].path
+    // }
+
+    // if (!avatarLocalPath) {
+    //     throw new ApiError (400, "Avatar file is required")
+    // }
+
+    // ******  Above two ways for writting coverImagePath  ***********
+
+
+
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
     if (!avatarLocalPath) {
-        throw new ApiError (400, "Avatar file is required")
+    throw new ApiError(400, "Avatar file is required");
     }
 
 
+    // // const avatarLocalPath = req.files?.avatar?.[0]?.path;
 
-    const avatar = uploadOnCloudinary(avatarLocalPath)
-    const coverImage = uploadOnCloudinary(coverImageLocalPath)
+    // // if (!avatarLocalPath) {
+    // // throw new ApiError(400, "Avatar file is required");
+    // // }
+
+    // const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+    // if (!avatar?.url) {
+    // throw new ApiError(500, "Avatar upload failed");
+    // }
+
+
+
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    const coverImage =  await uploadOnCloudinary(coverImageLocalPath)
 
     if(!avatar) {
         throw new ApiError(400, "Avatar file is required")
     }
+
+
+    // const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    // const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+    // if (!avatarLocalPath) {
+    // throw new ApiError(400, "Avatar file is required");
+    // }
+
+    // const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+    // if (!avatar?.url) {
+    // throw new ApiError(500, "Avatar upload failed");
+    // }
+
+    // let coverImage;
+    // if (coverImageLocalPath) {
+    // coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    // }
+
 
 
 
